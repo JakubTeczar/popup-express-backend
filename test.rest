@@ -1,0 +1,94 @@
+###
+GET http://localhost:5000/api/users/
+
+
+###
+//Register
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+    "name": "John ess",
+    "email": "john.ddssoeddk@examdksplfe.com",
+    "password": "12345678"
+}
+
+###
+//Login
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+    "email": "john.ddoek@example.com",
+    "password": "12345678"
+}
+
+###
+//Get User by Id
+GET http://localhost:5000/api/users/68
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzAsImlhdCI6MTc1NTk4MTIyNSwiZXhwIjoxNzU1OTkyMDI1fQ.0l-61YXWj5eeTt8BUX2bOzkjk5dabM6I2FHSUzyvvD0
+
+###
+//Logout
+POST http://localhost:5000/api/users/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU1OTUzMDYwLCJleHAiOjE3NTU5NjM4NjB9.oxO-iw1tJmpG_PHdLtcY_qTD68i9bk6Od_RAyUQ-am4
+
+
+###
+//Create Popup
+POST http://localhost:5000/api/popup/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU1OTYwMDYzLCJleHAiOjE3NTU5NzA4NjN9.E5zJZXFtNnTN06bGs_QyBbQ0cwypOzUX6P-GPB1V4xM
+
+{
+    "user_id": 1,
+    "name": "Test Popup",
+    "template_id": 1,
+    "popup_config": {
+        "title": "Test Popup",
+        "description": "This is a test popup"
+    },
+    "website_url": "https://www.google.com",
+    "content": {
+        "title": "Test Popup",
+        "description": "This is a test popup"
+    },
+    "exported_html": "This is a test popup",
+    "active": true
+}
+
+###
+GET http://localhost:5000/api/popup/9c473ab6-1a39-4c3e-b3cb-9b7ec242ec29
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjUsImlhdCI6MTc1NTk3MDEwNiwiZXhwIjoxNzU1OTgwOTA2fQ._QAfMsD6qeGVImyxz0TzSOW99dLYAmRdDITftVJ0AnU
+
+###
+PUT http://localhost:5000/api/popup/7a729952-66e7-46b4-be7e-a3032497cc29
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjUsImlhdCI6MTc1NTk3MDEwNiwiZXhwIjoxNzU1OTgwOTA2fQ._QAfMsD6qeGVImyxz0TzSOW99dLYAmRdDITftVJ0AnU
+
+{
+    "popup_config": {
+        "title": "Test Popup",
+        "description": "This is a test popup"
+    },
+    "content": {
+        "title": "Test Popup",
+        "description": "This is a test popup"
+    },
+    "exported_html": "This is a test popup",
+    "active": true,
+    "website_url": "https://www.google.com"
+}
+
+###
+DELETE http://localhost:5000/api/popup/07824910-986a-48cc-86e9-499c927ca706
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU1OTUzMDYwLCJleHAiOjE3NTU5NjM4NjB9.oxO-iw1tJmpG_PHdLtcY_qTD68i9bk6Od_RAyUQ-am4
+
+###
+GET http://localhost:5000/api/popup/get-user-popups/65
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjUsImlhdCI6MTc1NTk3MDEwNiwiZXhwIjoxNzU1OTgwOTA2fQ._QAfMsD6qeGVImyxz0TzSOW99dLYAmRdDITftVJ0AnU
+
+###

@@ -1,0 +1,92 @@
+# --- Node / ogólne ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.*
+yarn.lock.*
+pnpm-lock.yaml.*
+# (powyższe *.lock.* to stare/przestarzałe kopie – właściwy lock zwykle commitujemy)
+
+# Logi i runtime
+logs/
+*.log
+*.log.*
+npm-cache/
+.pnpm-store/
+pids/
+*.pid
+*.seed
+*.pid.lock
+nodemon-debug.log
+
+# Testy / pokrycie
+coverage/
+.nyc_output/
+jest-cache/
+jest-resolve-cache/
+.eslintcache
+
+# Build / output
+dist/
+build/
+out/
+.tmp/
+temp/
+tmp/
+
+# TypeScript
+*.tsbuildinfo
+
+# Pliki środowiskowe
+.env
+.env.*
+!.env.example         # zostaw przykładowy plik w repo
+
+# Bazy/pliki danych lokalne
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Uploady / dane robocze
+uploads/
+storage/
+cache/
+
+# Certyfikaty/klucze (lokalne)
+*.pem
+*.key
+*.crt
+
+# PM2
+.pids/
+.pm2/logs/
+.pm2/pids/
+.pm2/pm2.log
+.pm2/pm2.pid
+
+# Cypress / Playwright (jeśli używasz)
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+test-results/
+
+# System / OS
+.DS_Store
+Thumbs.db
+
+# IDE / edytory
+.vscode/
+.idea/
+*.iml
+
+# Yarn 2/3 (Plug'n'Play)
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
