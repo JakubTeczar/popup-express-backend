@@ -5,13 +5,13 @@ import crypto from 'crypto'
 const queries = loadNamedQueries('popupQueries')
 
 export const createPopupService = async (popup) => {
-    const { user_id, name, template_id, popup_config, content, exported_html, active, website_url, images } = popup
+    const { user_id, name, template_id, popup_config, content, exported_html, active, websites, images } = popup
     const share_id = crypto.randomUUID() 
     const checkShareId = await pool.query(queries.checkShareId, [share_id])
     if (checkShareId.rows.length > 0) {
         throw new Error('Share ID already exists')
     }
-    const result = await pool.query(queries.createPopup, [user_id, name, template_id, popup_config, content, exported_html, active, share_id, website_url, images])
+    const result = await pool.query(queries.createPopup, [user_id, name, template_id, popup_config, content, exported_html, active, share_id, websites, images])
     return result.rows[0]
 }
 
@@ -20,8 +20,8 @@ export const getPopupService = async (share_id) => {
     return result.rows[0]
 }
 
-export const updatePopupService = async (share_id, name, template_id, popup_config, content, exported_html, active, website_url, images) => {
-    const result = await pool.query(queries.updatePopup, [share_id, name, template_id, popup_config, content, exported_html, active, website_url, images])
+export const updatePopupService = async (share_id, name, template_id, popup_config, content, exported_html, active, websites, images) => {
+    const result = await pool.query(queries.updatePopup, [share_id, name, template_id, popup_config, content, exported_html, active, websites, images])
     return result.rows[0]
 }
 
@@ -33,4 +33,9 @@ export const deletePopupService = async (share_id) => {
 export const getAllUserPopupsService = async (user_id) => {
     const result = await pool.query(queries.getAllUserPopups, [user_id])
     return result.rows
+}
+
+export const getActivePopupForWebsiteService = async (userId, websiteId) => {
+    const result = await pool.query(queries.getActivePopupForWebsite, [userId, websiteId])
+    return result.rows[0]
 }

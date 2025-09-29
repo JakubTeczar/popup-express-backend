@@ -12,7 +12,7 @@ const handleResponse = (res, statusCode, message, data) => {
 }
 
 export const createPopup = async (req, res, next) => {
-    const { user_id, name, template_id, popup_config, content, exported_html, active, website_url, images } = req.body
+    const { user_id, name, template_id, popup_config, content, exported_html, active, websites, images } = req.body
     try {
         // Parse images array if provided
         let imageList = []
@@ -32,7 +32,7 @@ export const createPopup = async (req, res, next) => {
             content, 
             exported_html, 
             active, 
-            website_url,
+            websites: websites || [],
             images: imageList
         }
         
@@ -58,7 +58,7 @@ export const getPopup = async (req, res, next) => {
 
 export const updatePopup = async (req, res, next) => {
     const { share_id } = req.params
-    const { name, template_id, popup_config, content, exported_html, active, website_url, images } = req.body
+    const { name, template_id, popup_config, content, exported_html, active, websites, images } = req.body
     try {
         // Parse images array if provided
         let imageList = []
@@ -70,7 +70,7 @@ export const updatePopup = async (req, res, next) => {
             }))
         }
 
-        const updatedPopup = await updatePopupService(share_id, name, template_id, popup_config, content, exported_html, active, website_url, imageList)
+        const updatedPopup = await updatePopupService(share_id, name, template_id, popup_config, content, exported_html, active, websites || [], imageList)
         if (!updatedPopup) {
             return handleResponse(res, 404, 'Popup not found', null)
         }

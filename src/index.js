@@ -8,20 +8,23 @@ import errorHandler from './middlewares/errorHandler.js'
 import createUserTable from './data/createUserTable.js'
 import createPopupTable from './data/createPopupTable.js'
 import createImagesTable from './data/createImagesTable.js'
+import createWebsitesTable from './data/createWebsitesTable.js'
 import popupRoutes from './routes/popupRoutes.js'
 import imageRoutes from './routes/imageRoutes.js'
+import webhookRoutes from './routes/webhookRoutes.js'
+import websiteRoutes from './routes/websiteRoutes.js'
 
 dotenv.config()
 const app = express()
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 5000
 
 // Middleware
 app.use(express.json())
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://localhost:3001', 'https://twoja-domena.com', 'http://test-plugin.local/'],
+    origin: ['http://localhost:8080','http://localhost:3000/popwise_client_script.js', 'http://localhost:3001', 'https://twoja-domena.com', 'http://test-plugin.local'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Access-Key', 'X-Timestamp', 'X-Signature', 'X-Page-Id']
 }))
 
 // File upload middleware
@@ -41,6 +44,8 @@ app.use('/uploads', express.static('uploads'))
 app.use('/api/users', userRoutes)
 app.use('/api/popup', popupRoutes)
 app.use('/api/images', imageRoutes)
+app.use('/api/webhook', webhookRoutes)
+app.use('/api/websites', websiteRoutes)
 
 //Error handling
 app.use(errorHandler)
@@ -49,6 +54,7 @@ app.use(errorHandler)
 createUserTable()
 createPopupTable()
 createImagesTable()
+createWebsitesTable()
 
 //Postgres Connection
 app.get('/', async (req, res) => {

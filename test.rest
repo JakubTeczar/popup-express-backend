@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
     "name": "John ess",
-    "email": "john.ddssoeddk@examdksplfe.com",
+    "email": "johnn.sfsddoek@example.com",
     "password": "12345678"
 }
 
@@ -19,7 +19,7 @@ POST http://localhost:5000/api/users/login
 Content-Type: application/json
 
 {
-    "email": "john.ddoek@example.com",
+    "email": "johnn.sddoek@example.com",
     "password": "12345678"
 }
 
@@ -48,7 +48,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxN
         "title": "Test Popup",
         "description": "This is a test popup"
     },
-    "website_url": "https://www.google.com",
+    "websites": [1, 2, 3],
     "content": {
         "title": "Test Popup",
         "description": "This is a test popup"
@@ -78,7 +78,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjUsImlhdCI6M
     },
     "exported_html": "This is a test popup",
     "active": true,
-    "website_url": "https://www.google.com"
+    "websites": [1, 2, 3]
 }
 
 ###
@@ -92,3 +92,136 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjUsImlhdCI6MTc1NTk3MDEwNiwiZXhwIjoxNzU1OTgwOTA2fQ._QAfMsD6qeGVImyxz0TzSOW99dLYAmRdDITftVJ0AnU
 
 ###
+
+POST http://localhost:5000/api/users/1/generate-keys
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzU4ODM0MzY0LCJleHAiOjE3NTg4NDUxNjR9.Ah5DDl-nuKDKnDDDyr1A14Z64-25CHxNZt5XDGiCuW4
+
+###
+// Validate user keys
+POST http://localhost:5000/api/users/validate
+Content-Type: application/json
+X-Access-Key: ak_qz3jq5svz4s7qqphwx9ga
+X-Timestamp: 1640995200
+X-Signature: your_signature_here
+
+{
+    "request_type": "popup"
+}
+
+
+###
+// Generate keys for user (replace 5 with actual user ID)
+POST http://localhost:5000/api/users/generate-keys
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzU4ODM0MzY0LCJleHAiOjE3NTg4NDUxNjR9.Ah5DDl-nuKDKnDDDyr1A14Z64-25CHxNZt5XDGiCuW4
+
+###
+// Get keys for user (replace 5 with actual user ID)
+GET http://localhost:5000/api/users/keys
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzU4ODM1MzAyLCJleHAiOjE3NTg4NDYxMDJ9.tupu7MuQbGLoPXgcz_9MwWduIt0X8doubPQOHGtrMTc
+
+###
+// Get user websites
+GET http://localhost:5000/api/users/websites
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsImlhdCI6MTc1ODg5MDI3OSwiZXhwIjoxNzU4OTAxMDc5fQ.7K8Q9X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0
+
+##
+
+
+// websites test endpoint
+GET http://localhost:5000/api/websites/test
+
+###
+// websites for WordPress pages
+POST http://localhost:5000/api/websites/wordpress
+Content-Type: application/json
+X-Access-Key: ak_qz3jq5svz4s7qqphwx9ga
+X-Timestamp: 1640995200
+X-Signature: your_signature_here
+
+{
+    "action": "create",
+    "post_type": "page",
+    "post_id": 123,
+    "status": "publish",
+    "pages": [
+        {
+            "ID": 123,
+            "title": "Test Page",
+            "url": "https://example.com/test-page"
+        }
+    ]
+}
+
+###
+// Test delete websites
+POST http://localhost:5000/api/websites
+Content-Type: application/json
+X-Access-Key: ak_qz3jq5svz4s7qqphwx9ga
+X-Timestamp: 1640995200
+X-Signature: your_signature_here
+
+{
+    "action": "delete",
+    "post_type": "page",
+    "post_id": 123,
+    "status": "delete",
+    "pages": [
+        {
+            "ID": 123,
+            "title": "Test Page",
+            "url": "https://example.com/test-page"
+        }
+    ]
+}
+
+###
+// Get all websites
+GET http://localhost:5000/api/websites
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzU4ODM1MzAyLCJleHAiOjE3NTg4NDYxMDJ9.tupu7MuQbGLoPXgcz_9MwWduIt0X8doubPQOHGtrMTc
+
+###
+// Get websites by user ID
+GET http://localhost:5000/api/websites/user/6
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzU4ODM1MzAyLCJleHAiOjE3NTg4NDYxMDJ9.tupu7MuQbGLoPXgcz_9MwWduIt0X8doubPQOHGtrMTc
+
+###
+// Create single website
+POST http://localhost:5000/api/websites
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzU4ODM1MzAyLCJleHAiOjE3NTg4NDYxMDJ9.tupu7MuQbGLoPXgcz_9MwWduIt0X8doubPQOHGtrMTc
+
+{
+    "user_id": 6,
+    "url": "https://example.com/test-page",
+    "title": "Test Page",
+    "page_id": 123
+}
+
+###
+// Create multiple websites (bulk)
+POST http://localhost:5000/api/websites/bulk
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzU4ODM1MzAyLCJleHAiOjE3NTg4NDYxMDJ9.tupu7MuQbGLoPXgcz_9MwWduIt0X8doubPQOHGtrMTc
+
+{
+    "websites": [
+        {
+            "user_id": 6,
+            "url": "https://example.com/page1",
+            "title": "Page 1",
+            "page_id": 124
+        },
+        {
+            "user_id": 6,
+            "url": "https://example.com/page2",
+            "title": "Page 2",
+            "page_id": 125
+        }
+    ]
+}

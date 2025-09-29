@@ -1,4 +1,6 @@
-import { getAllUsersService, createUserService, getUserByIdService, updateUserService, deleteUserService, loginUserService, logoutUserService } from '../models/userModel.js'
+import { getAllUsersService, createUserService, getUserByIdService, updateUserService, deleteUserService, loginUserService, logoutUserService, generateUserKeysService, getUserByAccessKeyService, getUserKeysService } from '../models/userModel.js'
+import { getWebsitesByUserIdService, getWebsiteByPageIdAndUserIdService } from '../models/websiteModel.js'
+import { getActivePopupForWebsiteService } from '../models/popupModel.js'
 import jwt from 'jsonwebtoken'
 import { config } from '../config/config.js'
 
@@ -83,8 +85,9 @@ export const loginUser = async (req, res, next) => {
     try {
         const user = await loginUserService(email, password)
         const token = jwt.sign({ id: user.id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn })
+        const userWithToken = { ...user, token }
 
-        handleResponse(res, 200, 'User logged in successfully', { user, token })
+        handleResponse(res, 200, 'User logged in successfully', userWithToken)
     } catch (error) {
         next(error)
     }
@@ -95,6 +98,107 @@ export const logoutUser = async (req, res, next) => {
     try {
         await logoutUserService(id)
         handleResponse(res, 200, 'User logged out successfully', null)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const generateUserKeys = async (req, res, next) => {
+    const { id } = req.user
+    try {
+        const userWithKeys = await generateUserKeysService(id)
+        handleResponse(res, 200, 'Access and secret keys generated successfully', userWithKeys)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getWebsitePopup = async (req, res, next) => {
+    const accessKey = req.headers['x-access-key']
+    const timestamp = req.headers['x-timestamp']
+    const signature = req.headers['x-signature']
+    const pageId = req.headers['x-page-id']
+    
+    try {
+        if (!accessKey || !timestamp || !signature || !pageId) {
+            return handleResponse(res, 400, 'Missing required headers: X-Access-Key, X-Timestamp, X-Signature, X-Page-Id', null)
+        }
+        
+        // Get user by access key
+        const user = await getUserByAccessKeyService(accessKey)
+        if (!user) {
+            return handleResponse(res, 401, 'Invalid access key', null)
+        }
+        
+        // Verify signature
+        const crypto = await import('crypto')
+        const expectedSignature = crypto.createHmac('sha256', user.secret_key)
+            .update(accessKey + timestamp)
+            .digest('hex')
+        
+        if (signature !== expectedSignature) {
+            return handleResponse(res, 401, 'Invalid signature', null)
+        }
+        
+        // Check if timestamp is not too old (e.g., within 5 minutes)
+        const currentTime = Math.floor(Date.now() / 1000)
+        const requestTime = parseInt(timestamp)
+        const timeDiff = currentTime - requestTime
+        
+        if (timeDiff > 300) { // 5 minutes
+            return handleResponse(res, 401, 'Request timestamp is too old', null)
+        }
+        
+        // Find website by page_id and user_id
+        const website = await getWebsiteByPageIdAndUserIdService(pageId, user.id)
+        if (!website) {
+            return handleResponse(res, 404, 'Website not found for this page', null)
+        }
+        
+        // Get active popup for this website
+        const popup = await getActivePopupForWebsiteService(user.id, website.id)
+        if (!popup) {
+            return handleResponse(res, 404, 'No active popup found for this website', null)
+        }
+        
+        handleResponse(res, 200, 'Popup found successfully', { 
+            popup: popup.exported_html,
+            website_url: website.url,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getUserKeys = async (req, res, next) => {
+    const { id } = req.user
+    try {
+        const user = await getUserKeysService(id)
+        handleResponse(res, 200, 'User keys fetched successfully', user)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getUserWebsites = async (req, res, next) => {
+    const { id } = req.user
+    try {
+        const websites = await getWebsitesByUserIdService(id)
+        
+        // Transform websites data to return only URL and title
+        const websitesData = websites.map(website => ({
+            id: website.id,
+            url: website.url,
+            title: website.title,
+            page_id: website.page_id,
+            created_at: website.created_at,
+            updated_at: website.updated_at
+        }))
+        
+        handleResponse(res, 200, 'User websites fetched successfully', {
+            count: websitesData.length,
+            websites: websitesData
+        })
     } catch (error) {
         next(error)
     }
