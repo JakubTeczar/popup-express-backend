@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS popup (
     template_id INT NOT NULL,
     user_id INT NOT NULL,
     popup_config TEXT,
-    website_url VARCHAR(255) NOT NULL,
+    websites INTEGER[] DEFAULT '{}',
     content JSONB NOT NULL,
     exported_html TEXT NOT NULL,
     active BOOLEAN DEFAULT TRUE,

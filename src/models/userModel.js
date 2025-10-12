@@ -50,3 +50,22 @@ export const logoutUserService = async (id) => {
     const result = await pool.query(queries.logoutUser, [id])
     return result.rows[0]
 }
+
+export const generateUserKeysService = async (id) => {
+    // Generate random access key and secret key
+    const accessKey = 'ak_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    const secretKey = 'sk_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    
+    const result = await pool.query(queries.generateUserKeys, [accessKey, secretKey, id])
+    return result.rows[0]
+}
+
+export const getUserByAccessKeyService = async (accessKey) => {
+    const result = await pool.query(queries.getUserByAccessKey, [accessKey])
+    return result.rows[0]
+}
+
+export const getUserKeysService = async (id) => {
+    const result = await pool.query(queries.getUserKeys, [id])
+    return result.rows[0]
+}
