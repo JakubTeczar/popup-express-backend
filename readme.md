@@ -24,7 +24,7 @@ npm install
 #### Option: Using Docker 
 ```bash
 # Create and start PostgreSQL container
-docker run --name postgres-db -e POSTGRES_PASSWORD=your_password -e POSTGRES_DB=your_database -p 5432:5432 -d postgres:13
+docker run -d --name popwise-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=popwise -p 5432:5432 postgres
 ```
 ### 4. Environment Configuration
 
