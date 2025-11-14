@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { config } from '../config/config.js'
+import { getUserByIdService } from '../models/userModel.js'
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.authorization
     
     if (!authHeader) {
@@ -22,6 +23,16 @@ export const verifyToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, config.jwt.secret)
+        
+        // Sprawdź czy token istnieje w bazie danych
+        const user = await getUserByIdService(decoded.id)
+        if (!user || user.token !== token) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Token has been invalidated'
+            })
+        }
+        
         req.user = decoded
         next()
     } catch (error) {

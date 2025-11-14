@@ -4,7 +4,7 @@ SELECT id, name, email, created_at, updated_at FROM users;
 
 -- Get user by ID
 -- name: getUserById
-SELECT id, name, email, created_at, updated_at FROM users WHERE id = $1;
+SELECT id, name, email, token, created_at, updated_at FROM users WHERE id = $1;
 
 -- Create new user
 -- name: createUser
@@ -37,3 +37,7 @@ SELECT id, name, email, access_key, secret_key FROM users WHERE access_key = $1;
 -- Get user keys
 -- name: getUserKeys
 SELECT access_key, secret_key FROM users WHERE id = $1;
+
+-- Update user token (for login/register)
+-- name: updateUserToken
+UPDATE users SET token = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, name, email, token, created_at, updated_at;

@@ -1,4 +1,4 @@
-import { getAllUsersService, createUserService, getUserByIdService, updateUserService, deleteUserService, loginUserService, logoutUserService, generateUserKeysService, getUserByAccessKeyService, getUserKeysService } from '../models/userModel.js'
+import { getAllUsersService, createUserService, getUserByIdService, updateUserService, deleteUserService, loginUserService, logoutUserService, generateUserKeysService, getUserByAccessKeyService, getUserKeysService, updateUserTokenService } from '../models/userModel.js'
 import { getWebsitesByUserIdService, getWebsiteByPageIdAndUserIdService } from '../models/websiteModel.js'
 import { getActivePopupForWebsiteService } from '../models/popupModel.js'
 import jwt from 'jsonwebtoken'
@@ -72,9 +72,11 @@ export const registerUser = async (req, res, next) => {
     try {
         const newUser = await createUserService({ name, email, password })
         const token = jwt.sign({ id: newUser.id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn })
-        const userWithToken = { ...newUser, token }
+        
+        // Zapisz token do bazy danych
+        const userWithToken = await updateUserTokenService(newUser.id, token)
 
-        handleResponse(res, 201, 'User created successfully', userWithToken)
+        handleResponse(res, 201, 'User created successfully', { ...userWithToken, token })
     } catch (error) {
         next(error)
     }
@@ -85,9 +87,11 @@ export const loginUser = async (req, res, next) => {
     try {
         const user = await loginUserService(email, password)
         const token = jwt.sign({ id: user.id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn })
-        const userWithToken = { ...user, token }
+        
+        // Zapisz token do bazy danych
+        const userWithToken = await updateUserTokenService(user.id, token)
 
-        handleResponse(res, 200, 'User logged in successfully', userWithToken)
+        handleResponse(res, 200, 'User logged in successfully', { ...userWithToken, token })
     } catch (error) {
         next(error)
     }
@@ -160,9 +164,11 @@ export const getWebsitePopup = async (req, res, next) => {
         if (!popup) {
             return handleResponse(res, 404, 'No active popup found for this website', null)
         }
+
         
         handleResponse(res, 200, 'Popup found successfully', { 
             popup: popup.exported_html,
+            settings: popup.content,
             website_url: website.url,
         })
     } catch (error) {

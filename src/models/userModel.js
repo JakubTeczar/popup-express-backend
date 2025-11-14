@@ -1,5 +1,6 @@
 import pool from '../config/db.js'
 import { loadNamedQueries } from '../utils/sqlLoader.js'
+import bcrypt from 'bcrypt'
 
 // Load all user queries once
 const queries = loadNamedQueries('userQueries')
@@ -16,13 +17,26 @@ export const getUserByIdService = async (id) => {
 
 export const createUserService = async (user) => {
     const { name, email, password } = user
-    const result = await pool.query(queries.createUser, [name, email, password])
+    
+    // Hash password before saving to database
+    const saltRounds = 10
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    
+    const result = await pool.query(queries.createUser, [name, email, hashedPassword])
     return result.rows[0]
 }
 
 export const updateUserService = async (id, user) => {
     const { name, email, password } = user
-    const result = await pool.query(queries.updateUser, [name, email, password, id])
+    
+    // Hash password before updating if password is provided
+    let hashedPassword = password
+    if (password) {
+        const saltRounds = 10
+        hashedPassword = await bcrypt.hash(password, saltRounds)
+    }
+    
+    const result = await pool.query(queries.updateUser, [name, email, hashedPassword, id])
     return result.rows[0]
 }
 
@@ -38,8 +52,10 @@ export const loginUserService = async (email, password) => {
     }
     
     const user = result.rows[0]
-    // Here you should compare hashed passwords in production
-    if (user.password !== password) {
+    
+    // Compare hashed password with provided password
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) {
         throw new Error('Invalid email or password')
     }
     
@@ -67,5 +83,10 @@ export const getUserByAccessKeyService = async (accessKey) => {
 
 export const getUserKeysService = async (id) => {
     const result = await pool.query(queries.getUserKeys, [id])
+    return result.rows[0]
+}
+
+export const updateUserTokenService = async (id, token) => {
+    const result = await pool.query(queries.updateUserToken, [token, id])
     return result.rows[0]
 }
