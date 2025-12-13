@@ -21,7 +21,7 @@ const port = process.env.PORT || 5000
 // Middleware
 app.use(express.json())
 app.use(cors({
-    origin: ['http://localhost:8080','http://localhost:3000/popwise_client_script.js','http://client-site.test', 'http://localhost:3001', 'https://twoja-domena.com', 'http://test-plugin.local', 'http://client-site.local'],
+    origin: ['https://popify-creator.onrender.com'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Access-Key', 'X-Timestamp', 'X-Signature', 'X-Page-Id']
